@@ -24,10 +24,10 @@
   ansible.builtin.user:
     name: expense
 
-- name: Run common tasks from common
-  include_role:
-    name: common
-    tasks_from: main   
+# - name: Run common tasks from common
+#   include_role:
+#     name: common
+#     tasks_from: main   
 
 # - name: create app directory
 #   ansible.builtin.file:
