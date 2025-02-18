@@ -1,0 +1,7 @@
+- name: Configuring mysql server
+  hosts: mysql
+  become: yes
+  # vars_files: 
+  # - roles/mysql/vars/vault.yaml   #not using in server to password store
+  roles:
+  - mysql

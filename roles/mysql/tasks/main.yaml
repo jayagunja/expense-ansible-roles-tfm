@@ -1,0 +1,36 @@
+- name: Install lib
+  ansible.builtin.pip:
+    name: "{{ item }}"
+    executable: pip3.9
+  loop:
+    - PyMySQL
+    - cryptography
+
+- name: Install mysql server
+  ansible.builtin.package:
+    name: mysql-server
+    state: installed
+
+- name: Start and enable  mysql service
+  ansible.builtin.service:
+    name: mysqld
+    state: started
+    enabled: yes
+
+- name: connect to mysql server
+  community.mysql.mysql_info:
+    login_user: "{{ mysql_user_name }}"
+    login_password: "{{ lookup('amazon.aws.aws_ssm', '/expense/mysql/mysql_root_password', decrypt=True ) }}"
+    login_host: "{{ mysql_host }}"
+  register: mysql_info
+  ignore_errors: true
+
+# - name: print the mysql output
+#   ansible.builtin.debug:
+#     msg: "{{ mysql_info }}"
+
+- name: setup custome password 
+  ansible.builtin.command: "mysql_secure_installation --set-root-pass {{ lookup('amazon.aws.aws_ssm', '/expense/mysql/mysql_root_password', decrypt=True ) }} "
+  when: mysql_info.failed is true 
+
+
